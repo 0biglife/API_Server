@@ -1,0 +1,13 @@
+{
+  "name": "express_project",
+  "version": "1.0.0",
+  "description": "testing",
+  "main": "index.js",
+  "repository": "https://github.com/0biglife/API_Server",
+  "author": "0biglife",
+  "license": "ISC",
+  "private": null,
+  "dependencies": {
+    "express": "4.17.2"
+  }
+}
