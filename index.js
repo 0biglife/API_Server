@@ -1,14 +1,14 @@
 //express 모듈 불러오기
 const express = require('express');
 //express 사용
-const app = express();
+const router = express();
 
 /**
  * @path http://localhost:3000/ 경로 세팅
  */
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
 const users = [
 	//임시 데이터
@@ -21,7 +21,7 @@ const users = [
  * @path {GET} http://localhost:3000/
  * @description 요청 데이터 값이 없고 반환 값이 있는 GET Method
  */
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
 	//Hello World 데이터 반환
 	res.send('Hello World');
 });
@@ -30,11 +30,10 @@ app.get('/', (req, res) => {
  * @path {GET} http://localhost:3000/api/users
  * @description 요청 데이터 값이 없고 반환 값이 있는 GET Method
  */
-app.get("/api/users", (req, res) => {
-
-    //유저 정보 반환
-    res.json({ok: true, users: users});
-})
+router.get('/api/users', (req, res) => {
+	//유저 정보 반환
+	res.json({ ok: true, users: users });
+});
 
 /**
  * @path {GET} http://localhost:3000/api/users/user?user_id=1
@@ -45,15 +44,14 @@ app.get("/api/users", (req, res) => {
  *  &를 통해 두번째 변수를 받아서 사용할 수 있다.(/user?user_id=1&name="유저1")
  * 
  */
-app.get("/api/users/user", (req, res) => {
+router.get('/api/users/user', (req, res) => {
+	const user_id = req.query.user_id;
 
-    const user_id = req.query.user_id
+	//filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
+	const user = users.filter(data => data.id == user_id);
 
-    //filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
-    const user = users.filter(data => data.id == user_id);
-
-    res.json({ok: false, user: user})
-})
+	res.json({ ok: false, user: user });
+});
 
 /**
  * @path {GET} http://localhost:3000/api/users/userBody
@@ -61,15 +59,14 @@ app.get("/api/users/user", (req, res) => {
  * 
  *  post로 요청시 body에 데이터를 담아서 보낼수 있듯이 get도 사용이 가능하다.
  */
-app.get("/api/users/userBody", (req, res) => {
+router.get('/api/users/userBody', (req, res) => {
+	const user_id = req.body.user_id;
 
-    const user_id = req.body.user_id
+	//filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
+	const user = users.filter(data => data.id == user_id);
 
-    //filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
-    const user = users.filter(data => data.id == user_id);
-
-    res.json({ok: false, user: user})
-})
+	res.json({ ok: false, user: user });
+});
 
 
  
@@ -87,95 +84,83 @@ app.get("/api/users/userBody", (req, res) => {
  *  경로가 /users/1 이거나 /users/2 이거 일때 둘다 라우터를 거치게 된다.
  *  그렇기 때문에 다른 라우터 보다 아래 있어야 한다.
  */
-app.get("/api/users/:user_id", (req, res) => {
+router.get('/api/users/:user_id', (req, res) => {
+	const user_id = req.params.user_id;
 
-    const user_id = req.params.user_id
+	//filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
+	const user = users.filter(data => data.id == user_id);
 
-    //filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
-    const user = users.filter(data => data.id == user_id);
+	res.json({ ok: true, user: user });
+});
 
-    res.json({ok: true, user: user})
-})
+//POST 방식!! 드디어..
+router.post("/api/users/add", (req, res) => {
+  
+  const user = {
+		id: users.length + 1,
+		name: req.body.name,
+	};
 
-
-/**
- * @path {POST} http://localhost:3000/api/users/add
- * @description POST Method
- * 
- *  POST 데이터를 생성할 때 사용된다.
- *  req.body에 데이터를 담아서 보통 보낸다.
- */
-app.post("/api/users/add", (req, res) => {
-
-    // 구조분해를 통해 id 와 name을 추출
-    const { id, name } = req.body
-
-    //concat 함수는 자바스크립트에서 배열 함수이다. 새로운 데이터를 추가하면 새로운 배열로 반환한다.
-    const user = users.concat({id, name});
-
-    res.json({ok: true, users: user})
+  users.push(user);
+  
+  res.json({ok: true, users: user})
 })
 
 /**
  * @path {PUT} http://localhost:3000/api/users/update
  * @description 전체 데이터를 수정할 때 사용되는 Method
  */
-app.put("/api/users/update", (req, res) => {
-    
-    // 구조분해를 통해 id 와 name을 추출
-    const { id, name } = req.body
+router.put('/api/users/update', (req, res) => {
+	// 구조분해를 통해 id 와 name을 추출
+	const { id, name } = req.body;
 
-    //map 함수는 자바스크립트에서 배열 함수이다. 요소를 일괄적으로 변경할 때 사용됩니다.
-    const user = users.map(data => {
+	//map 함수는 자바스크립트에서 배열 함수이다. 요소를 일괄적으로 변경할 때 사용됩니다.
+	const user = users.map(data => {
+		if (data.id == id) data.name = name;
 
-        if(data.id == id) data.name = name
+		return {
+			id: data.id,
+			name: data.name,
+		};
+	});
 
-        return {
-            id: data.id,
-            name: data.name
-        }
-    })
-
-    res.json({ok: true, users: user})
-})
+	res.json({ ok: true, users: user });
+});
 
 /**
  * @path {PATCH} http://localhost:3000/api/user/update/:user_id
  * @description 단일 데이터를 수정할 때 사용되는 Method
  */
-app.patch("/api/user/update/:user_id", (req, res) => {
+router.patch('/api/user/update/:user_id', (req, res) => {
+	const { user_id } = req.params;
+	const { name } = req.body;
 
-    const { user_id} = req.params
-    const { name } = req.body
+	//map 함수는 자바스크립트에서 배열 함수이다. 요소를 일괄적으로 변경할 때 사용됩니다.
+	const user = users.map(data => {
+		if (data.id == user_id) data.name = name;
 
-    //map 함수는 자바스크립트에서 배열 함수이다. 요소를 일괄적으로 변경할 때 사용됩니다.
-    const user = users.map(data => {
+		return {
+			id: data.id,
+			name: data.name,
+		};
+	});
 
-        if(data.id == user_id) data.name = name
-
-        return {
-            id: data.id,
-            name: data.name
-        }
-    })
-
-    res.json({ok: true, users: user})
-})
+	res.json({ ok: true, users: user });
+});
 
 /**
  * @path {DELETE} http://localhost:3000/api/user/delete
  * @description 데이터 삭제
  * 
  */
-app.delete("/api/user/delete", (req, res) => {
+router.delete('/api/user/delete', (req, res) => {
+	const user_id = req.query.user_id;
 
-    const user_id = req.query.user_id
+	//filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
+	const user = users.filter(data => data.id != user_id);
 
-    //filter라는 함수는 자바스크립트에서 배열 함수이다. 필터링을 할때 많이 사용된다 필터링한 데이터를 새로운 배열로 반환한다.
-    const user = users.filter(data => data.id != user_id );
-
-    res.json({ok: true, users: user})
-})
+	res.json({ ok: true, users: user });
+});
 
 // http listen port 생성 서버 실행
-app.listen(3000, () => console.log('0BigLife Server :)'));
+router.listen(3000, () => console.log('0BigLife Server :)'));
