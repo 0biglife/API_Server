@@ -6,6 +6,7 @@ const router = express();
 // http://localhost:3000/ 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+router.set('json spaces', 2);
 
 const users = [
 	{ id: 1, name: '0biglife_01' },
@@ -17,9 +18,8 @@ const feeds = [
 	{
 		id: 1,
 		name: 'Giriboy',
-		title: 'Hi, my name is Giriboy and I just got here for ...',
-		url:
-			'https://w.namu.la/s/5fea88ec01958c7ab1553474199357e1647307f1b3845bebdfbc9b387861a1900bd0fd8476a42a4d1afc0cdceeca66e5915c2cc6c4dcf891730ee3da8867df64a7e2bb7a50d0ad3889ea1d528beafeb962ae16cc427dedbf496305bd49f5fb94e7c4b8f9fdfdfc24d4812c6fcf262eae',
+		title: '(눈을 찌푸리며) DO THAT XXXX !',
+		url: 'https://i.ytimg.com/vi/6SIGoJtTm_o/maxresdefault.jpg',
 		thumbnailUrl:
 			'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/2017_%EA%B8%B0%EB%A6%AC%EB%B3%B4%EC%9D%B4.jpg/2560px-2017_%EA%B8%B0%EB%A6%AC%EB%B3%B4%EC%9D%B4.jpg',
 		postTime: '2022-01-25',
@@ -27,9 +27,9 @@ const feeds = [
 	{
 		id: 2,
 		name: 'DongHyun-Seo',
-		title: 'Hi, my name is DongHyun and I just got here for ...',
+		title: '폴인러브(하트) 저 완전 사랑에 빠졌어요 지금',
 		url:
-			'http://img.etoday.co.kr/pto_db/2021/12/600/20211204011121_1693934_991_550.jpg',
+			'https://t1.daumcdn.net/news/201908/17/newsen/20190817070606663wayu.jpg',
 		thumbnailUrl:
 			'https://w.namu.la/s/ff2ae0f6737cc6e3ca3d167b13e76ca416f6aa6592bbc007109945308a9c90ac454fa5c184db555b20f2d8ec49b72d6aef36fff9553a1cdf378d06416890ebf3162e45e8aba0c0e09baea8e58e628eea50bb0abe955bd35ab80f1b275bde140ea8b937c7fbf1d1169de62d635c166082',
 		postTime: '2022-01-25',
@@ -37,7 +37,7 @@ const feeds = [
 	{
 		id: 3,
 		name: 'YoungB',
-		title: 'Hi, my name is Giriboy and I just got here for ...',
+		title: '스읍-하',
 		url:
 			'https://images.chosun.com/resizer/CzfbjMoa-qtvRJPbm9yW_e0JtFI=/650x650/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/CT73WT6KEZOYDE2FX7236EE4RA.jpg',
 		thumbnailUrl:
@@ -49,6 +49,10 @@ const feeds = [
 //라우팅 처리
 router.get('/', (req, res) => {
 	res.send('Server for API TEST!');
+});
+
+router.get('/api', (req, res) => {
+	res.json({ users: users, feeds: feeds });
 });
 
 router.get('/api/users', (req, res) => {
@@ -76,18 +80,30 @@ router.get('/api/users/:user_id', (req, res) => {
 	res.json({ ok: true, user: user });
 });
 
-//POST 방식!! 드디어..
-router.post("/api/users/add", (req, res) => {
-  
-  const user = {
+//POST METHOD
+router.post('/api/users/add', (req, res) => {
+	const user = {
 		id: users.length + 1,
 		name: req.body.name,
 	};
 
-  users.push(user);
-  
+	users.push(user);
+
 	res.json({ ok: true, users: user });
-})
+});
+
+router.post('/api/feeds/add', (req, res) => {
+	const feed = {
+		id: feeds.length + 1,
+		name: '0biglife',
+		title: req.body.title,
+		url: req.body.url,
+		thumbnailUrl: req.body.thumbnailUrl,
+		postTime: req.body.postTime,
+	};
+	feeds.push(feed);
+	res.json({ ok: true, feeds: feed });
+});
 
 //3000포트로 서버 오픈 // router.listen(포트번호, 콜백함수)
 router.listen(3000, () => console.log('0BigLife Server :)'));
