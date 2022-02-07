@@ -49,31 +49,61 @@ const users = [
 const feeds = [
 	{
 		id: 1,
-		name: 'Giriboy',
-		title: '(눈을 찌푸리며) DO THAT XXXX !',
-		url: 'https://i.ytimg.com/vi/6SIGoJtTm_o/maxresdefault.jpg',
+		name: 'HyundaiMotors',
+		title: 'amazing design with practical lines --',
+		url:
+			'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/QLPJ3MTU3GV3MXT72BNJ7FE75Q.jpg',
 		thumbnailUrl:
-			'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/2017_%EA%B8%B0%EB%A6%AC%EB%B3%B4%EC%9D%B4.jpg/2560px-2017_%EA%B8%B0%EB%A6%AC%EB%B3%B4%EC%9D%B4.jpg',
+			'https://news.hmgjournal.com/upload/common/activeSquare/binary/A141027-con-n2.jpg',
 		postTime: '2022-01-25',
 	},
 	{
 		id: 2,
-		name: 'DongHyun-Seo',
-		title: '폴인러브(하트) 저 완전 사랑에 빠졌어요 지금',
+		name: 'Ionic-2',
+		title: 'Deep-coral color-sets on the skin of the -',
 		url:
-			'https://t1.daumcdn.net/news/201908/17/newsen/20190817070606663wayu.jpg',
+			'https://img1.daumcdn.net/thumb/R1280x0.fjpg/?fname=http://t1.daumcdn.net/brunch/service/user/b9D6/image/rCzq83bTJF--YqMwsGC1eHHURUI.JPG',
 		thumbnailUrl:
-			'https://w.namu.la/s/ff2ae0f6737cc6e3ca3d167b13e76ca416f6aa6592bbc007109945308a9c90ac454fa5c184db555b20f2d8ec49b72d6aef36fff9553a1cdf378d06416890ebf3162e45e8aba0c0e09baea8e58e628eea50bb0abe955bd35ab80f1b275bde140ea8b937c7fbf1d1169de62d635c166082',
+			'https://news.hmgjournal.com/images_n/contents/0810_IONIQ_01.png',
 		postTime: '2022-01-25',
 	},
 	{
 		id: 3,
-		name: 'YoungB',
-		title: '스읍-하',
+		name: 'Ionic-5',
+		title: 'damm..it is rlly cool..',
 		url:
-			'https://images.chosun.com/resizer/CzfbjMoa-qtvRJPbm9yW_e0JtFI=/650x650/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/CT73WT6KEZOYDE2FX7236EE4RA.jpg',
+			'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/PNZFYQ55AWHETGY5KBUEAQZZ7Y.png',
 		thumbnailUrl:
-			'https://w.namu.la/s/fa1d5dac661e7fd14f23329076788364e29082a9646bbd77634200d167fdc4a62abc9a7d4f9a38bb8d64073ce02a0b788d33357bad5bca0fbe69e66acfa5aa8fb22f69fb11a0814b3ed21108868d188d4d5d7c7caf6e52540aee8345782b552c4729e6268d35497ecd5539bc66c2c874',
+			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSytvv-8epVaEhXaXMNatIdv74zGFN-IrY8W_g83Hwf5s_y4_okrWx-zaj66PD78-C3kZ4&usqp=CAU',
+		postTime: '2022-01-25',
+	},
+	{
+		id: 4,
+		name: 'Tesla',
+		title: 'It is truly REVOLUSTIONARY DESIGN OF MOTOR INDUSTRY-',
+		url:
+			'https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2020%2F09%2FMost-expensive-mode-of-car-brand-8.jpg?w=1600&cbr=1&q=90&fit=max',
+		thumbnailUrl:
+			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbXIVhcC07g7h_mOOj5m79FErZMw3E8U8cjwqbuezOlnD7Nj0k4dbnRy1qXLMltA71QJA&usqp=CAU',
+		postTime: '2022-01-25',
+	},
+	{
+		id: 5,
+		name: 'Tesla2',
+		title: 'ssssssp-',
+		url:
+			'https://img.etnews.com/photonews/1702/919619_20170202161458_402_0001.jpg',
+		thumbnailUrl:
+			'https://ae01.alicdn.com/kf/Hd8de533db27e497db98f6e2a71351f5cj.jpg',
+		postTime: '2022-01-25',
+	},
+	{
+		id: 6,
+		name: 'BMW MOTORS',
+		title: 'ssssssp-',
+		url: 'https://cdn.autotribune.co.kr/news/photo/201901/3004_1826_1045.jpg',
+		thumbnailUrl:
+			'https://i2.wp.com/thinkmarketingmagazine.com/wp-content/uploads/2012/08/bmw-logo.png?ssl=1',
 		postTime: '2022-01-25',
 	},
 ];
@@ -139,17 +169,30 @@ router.post('/api/feeds/add', (req, res) => {
 });
 
 //SEARCH(get)
+router.get('/api/search', (req, res) => {
+	const searchQuery = req.query.name;
+	if (searchQuery != null) {
+		users.find({ name: searchQuery }).then(result => {
+			res.status(200).json(result);
+		});
+	} else {
+		// res.end();
+		console.log('test');
+	}
+	res.json({ ok: true, users: users });
+});
+
 router.get('/search/:name', (req, res) => {
 	const searchQuery = req.query.name;
 
 	if (searchQuery != null) {
-		users.find({ name: searchQuery }).then((result) => {
+		users.find({ name: searchQuery }).then(result => {
 			res.status(200).json(result);
-		})
+		});
 	} else {
 		res.end();
 	}
-})
+});
 
 //3000포트로 서버 오픈 // router.listen(포트번호, 콜백함수)
 router.listen(3000, () => console.log('0BigLife Server :)'));
