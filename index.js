@@ -1,4 +1,5 @@
 //node_modules 의 express 파일 가져온다
+const { request } = require('express');
 const express = require('express');
 //express 함수의 반환값을 router로 지정.
 const router = express();
@@ -55,7 +56,7 @@ const feeds = [
 			'https://cloudfront-ap-northeast-1.images.arcpublishing.com/chosunbiz/QLPJ3MTU3GV3MXT72BNJ7FE75Q.jpg',
 		thumbnailUrl:
 			'https://news.hmgjournal.com/upload/common/activeSquare/binary/A141027-con-n2.jpg',
-		postTime: '2022-01-25',
+		postTime: '2022-01-15',
 	},
 	{
 		id: 2,
@@ -65,7 +66,7 @@ const feeds = [
 			'https://img1.daumcdn.net/thumb/R1280x0.fjpg/?fname=http://t1.daumcdn.net/brunch/service/user/b9D6/image/rCzq83bTJF--YqMwsGC1eHHURUI.JPG',
 		thumbnailUrl:
 			'https://news.hmgjournal.com/images_n/contents/0810_IONIQ_01.png',
-		postTime: '2022-01-25',
+		postTime: '2022-01-20',
 	},
 	{
 		id: 3,
@@ -125,6 +126,13 @@ router.get('/api/feeds', (req, res) => {
 	res.json(feeds);
 });
 
+router.get('/api/feeds/:feed_id', (req, res) => {
+	const feed_id = req.params.feed_id;
+	const feed = feeds.filter(data => data.id == feed_id);
+
+	res.json({ ok: true, feeds: feed });
+});
+
 //param 사이에는 '&' 입력.!
 router.get('/api/users/user', (req, res) => {
 	const user_id = req.query.user_id;
@@ -180,6 +188,19 @@ router.get('/api/search', (req, res) => {
 		console.log('test');
 	}
 	res.json({ ok: true, users: users });
+});
+
+router.get('/api/pics', function (req, res) {
+	request(
+		'https://api.unsplash.com/search/photos?client_id=niOhWgxJbQQJUSsBC0XauybHlWH-IqG2Rrhwx8NMeTc&query=sun',
+		function (err, res, body) {
+			if (err) {
+				console.log(err);
+			} else {
+				//
+			}
+		}
+	);
 });
 
 router.get('/search/:name', (req, res) => {
